@@ -12,15 +12,25 @@ st.set_page_config(
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "final_results"
+SQL_DATA = ROOT / "results" / "spark_sql"
+ML_DATA = ROOT / "results" / "logistic_regression"
 
 
 @st.cache_data
 def load_csv(filename):
-    return pd.read_csv(DATA / filename,
-        keep_default_na=False)
+    sql_files = {
+        "server_load.csv",
+        "regional_latency.csv",
+        "disconnects.csv",
+        "peak_hours.csv"
+    }
 
+    if filename in sql_files:
+        path = SQL_DATA / filename
+    else:
+        path = ML_DATA / filename
 
+    return pd.read_csv(path, keep_default_na=False)
 server = load_csv("server_load.csv")
 latency = load_csv("regional_latency.csv")
 disconnects = load_csv("disconnects.csv")
